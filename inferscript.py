@@ -42,8 +42,8 @@ with mss() as sct:
                 if classification[1] == 1:
                     new_time = time.time()
                     print("Hook Detected!")
-                    plt.imsave("img"+str(time.time())+".png", sct_img.reshape(224,224,3))
-                    plt.imsave("img"+str(time.time())+"s.png", img.reshape(224,224,3))
+                    plt.imsave("img"+str(new_time)+".png", sct_img.reshape(224,224,3))
+                    plt.imsave("img"+str(new_time)+"s.png", img.reshape(224,224,3))
                     '''
                     keyboard.send("q")
                     time.sleep(10)
