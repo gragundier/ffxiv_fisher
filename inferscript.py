@@ -48,14 +48,7 @@ with mss() as sct:
                     new_time = time.time()
                     if classification[1] >= 0.9:
                         print("Hook Detected!")
-                        '''
-                        keyboard.send("q")
-                        time.sleep(10)
-                        keyboard.send("f")
-                        time.sleep(0.2)
-                        keyboard.send("f")
-                        old_time = new_time
-                        '''
+
                         print("Time Passed: ",new_time-old_time)
                         if (new_time-old_time > 22.0):
                             print("Reeling")
