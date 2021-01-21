@@ -4,6 +4,7 @@ import time
 import numpy as np
 import keyboard
 import matplotlib.pyplot as plt
+import random
 #import mss
 
 from mss.windows import MSS as mss
@@ -13,8 +14,8 @@ import mss.windows as mssw
 monitor = {"top": 428, "left": 848, "width": 224, "height": 224}
 output = "sct-{top}x{left}_{width}x{height}.png".format(**monitor)
 
-model = tf.keras.models.load_model("C:/Users/gragundier/Models/model3")
-#model2 = tf.keras.models.load_model("C:/Users/gragundier/Models/model1")
+model = tf.keras.models.load_model("C:/Users/gragundier/Models/model1")
+model2 = tf.keras.models.load_model("C:/Users/gragundier/Models/conv1")
 
 HOOKED_DIR = "C:/Users/gragundier/Data/hooked/"
 DISAGREE_DIR = "C:/Users/gragundier/Data/disagree/"
@@ -41,11 +42,17 @@ with mss() as sct:
                 #print(model2.predict(img))
                 #mss.tools.to_png(sct_img.rgb, sct_img.size, output=output)
                 classification = model.predict(img)[0]
-                #classification2 = model2.predict(img)[0]
+                classification2 = model2.predict(img)[0]
+
+                new_time = time.time()
+
+                if abs(classification2[1] - classification[1]) > 0.1:
+                    plt.imsave(DISAGREE_DIR+"img"+str(new_time)+".png", sct_img.reshape(224,224,3))
+                    plt.imsave(DISAGREE_DIR+"img"+str(new_time)+"s"+str(classification2[0])+".png", img.reshape(224,224,3))
+
                 #if classification[0] == 1:
                     #keyboard.send("2")
                 if classification[1] >= 0.9:
-                    new_time = time.time()
                     if classification[1] >= 0.9:
                         print("Hook Detected!")
 
@@ -65,15 +72,21 @@ with mss() as sct:
                             keyboard.send("r")
                             time.sleep(0.2)
                             keyboard.send("r")
-                            time.sleep(7)
+                            time.sleep(4)
 
-                        plt.imsave(HOOKED_DIR+"img"+str(time.time())+".png", sct_img.reshape(224,224,3))
-                        plt.imsave(HOOKED_DIR+"img"+str(time.time())+"s.png", img.reshape(224,224,3))
+                        plt.imsave(HOOKED_DIR+"img"+str(new_time)+".png", sct_img.reshape(224,224,3))
+                        plt.imsave(HOOKED_DIR+"img"+str(new_time)+"s.png", img.reshape(224,224,3))
 
                     keyboard.send("f")
                     time.sleep(0.2)
                     keyboard.send("f")
                     old_time = new_time
+
+                if random.randint(0,100) > 95:
+                    #ftime.sleep(random.randint(0,2))
+                    keyboard.send("f")
+                    time.sleep(0.2)
+                    keyboard.send("f")
                     
 
 
@@ -82,4 +95,4 @@ with mss() as sct:
 
     except KeyboardInterrupt:
         print("KeyboardInterrupt")
-        #closing stuff...
+        #closing stuff...ffff
