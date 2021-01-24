@@ -8,8 +8,6 @@ import random
 #import mss
 
 from mss.windows import MSS as mss
-import mss.windows as mssw
-
 
 monitor = {"top": 428, "left": 848, "width": 224, "height": 224}
 output = "sct-{top}x{left}_{width}x{height}.png".format(**monitor)
@@ -33,7 +31,7 @@ input_dict = {
 
 #def save_data():
 
-print("Hotkeys loaded...")
+#print("Hotkeys loaded...")
 
 with mss() as sct:
     try:
@@ -61,7 +59,7 @@ with mss() as sct:
 
                 if abs(classification2[1] - classification[1]) > 0.1:
                     x = np.argmax(classification2)
-                    plt.imsave(DISAGREE_DIR+str(x)+"/"+"img"+str(new_time)+".png", sct_img.reshape(224,224,3))
+                    cv2.imwrite(DISAGREE_DIR+str(x)+"/"+"img"+str(new_time)+".png", sct_img.reshape(224,224,3))
                     plt.imsave(DISAGREE_DIR+str(x)+"/"+"img"+str(new_time)+"s"+str(classification2)+".png", img.reshape(224,224,3))
 
                 #if classification[0] == 1:
