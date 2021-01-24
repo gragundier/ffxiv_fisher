@@ -15,14 +15,26 @@ monitor = {"top": 428, "left": 848, "width": 224, "height": 224}
 output = "sct-{top}x{left}_{width}x{height}.png".format(**monitor)
 
 model = tf.keras.models.load_model("C:/Users/gragundier/Models/model1")
-model2 = tf.keras.models.load_model("C:/Users/gragundier/Models/conv1")
+model2 = tf.keras.models.load_model("C:/Users/gragundier/Models/conv4")
+
+print("Model loaded...")
 
 HOOKED_DIR = "C:/Users/gragundier/Data/hooked/"
 DISAGREE_DIR = "C:/Users/gragundier/Data/disagree/"
 
-print("Model loaded...")
+'''
+input_dict = {
+    "q": ""
+}
+'''
 
-counter = 0
+#def record(input, classification):
+#
+
+#def save_data():
+
+print("Hotkeys loaded...")
+
 with mss() as sct:
     try:
         print("Beginning inference loop...")
@@ -35,6 +47,7 @@ with mss() as sct:
             #sct_test = sct_img.reshape(224,224,3)
             #plt.imshow(sct_test)
             #plt.show()
+
             if sct_old is not None:
                 img = sct_img-sct_old
                 #print(sct_img.shape)
@@ -47,8 +60,9 @@ with mss() as sct:
                 new_time = time.time()
 
                 if abs(classification2[1] - classification[1]) > 0.1:
-                    plt.imsave(DISAGREE_DIR+"img"+str(new_time)+".png", sct_img.reshape(224,224,3))
-                    plt.imsave(DISAGREE_DIR+"img"+str(new_time)+"s"+str(classification2[0])+".png", img.reshape(224,224,3))
+                    x = np.argmax(classification2)
+                    plt.imsave(DISAGREE_DIR+str(x)+"/"+"img"+str(new_time)+".png", sct_img.reshape(224,224,3))
+                    plt.imsave(DISAGREE_DIR+str(x)+"/"+"img"+str(new_time)+"s"+str(classification2)+".png", img.reshape(224,224,3))
 
                 #if classification[0] == 1:
                     #keyboard.send("2")
@@ -81,6 +95,17 @@ with mss() as sct:
                     time.sleep(0.2)
                     keyboard.send("f")
                     old_time = new_time
+                '''
+                else:
+                    if classification[2] >= 0.9:
+                        x = np.argmax(classification2)
+                        plt.imsave(HOOKED_DIR+str(x)+"/"+"img"+str(new_time)+".png", sct_img.reshape(224,224,3))
+                        plt.imsave(HOOKED_DIR+str(x)+"/"+"img"+str(new_time)+"s.png", img.reshape(224,224,3))
+                    if classification[0] >= 0.9 and random.randint(0,100000) > 95000:
+                        x = np.argmax(classification2)
+                        plt.imsave(HOOKED_DIR+str(x)+"/"+"img"+str(new_time)+".png", sct_img.reshape(224,224,3))
+                        plt.imsave(HOOKED_DIR+str(x)+"/"+"img"+str(new_time)+"s.png", img.reshape(224,224,3))
+                '''
 
                 if random.randint(0,100) > 95:
                     #ftime.sleep(random.randint(0,2))
@@ -89,7 +114,8 @@ with mss() as sct:
                     keyboard.send("f")
                     
 
-
+            #else:
+            #    img = sct_img
                     
             sct_old = sct_img
 
