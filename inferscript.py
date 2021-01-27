@@ -9,16 +9,22 @@ import random
 
 from mss.windows import MSS as mss
 
-monitor = {"top": 428, "left": 848, "width": 224, "height": 224}
+gpu = tf.config.experimental.list_physical_devices('GPU')
+tf.config.experimental.set_memory_growth(gpu[0], True)
+
+RESOLUTION = 224
+
+monitor = {"top": 428, "left": 848, "width": RESOLUTION, "height": RESOLUTION}
 output = "sct-{top}x{left}_{width}x{height}.png".format(**monitor)
 
 model = tf.keras.models.load_model("C:/Users/gragundier/Models/model1")
-model2 = tf.keras.models.load_model("C:/Users/gragundier/Models/conv4")
+model2 = tf.keras.models.load_model("C:/Users/gragundier/Models/checkpoint")
 
 print("Model loaded...")
 
 HOOKED_DIR = "C:/Users/gragundier/Data/hooked/"
 DISAGREE_DIR = "C:/Users/gragundier/Data/disagree/"
+
 
 '''
 input_dict = {
@@ -59,8 +65,11 @@ with mss() as sct:
 
                 if abs(classification2[1] - classification[1]) > 0.1:
                     x = np.argmax(classification2)
-                    cv2.imwrite(DISAGREE_DIR+str(x)+"/"+"img"+str(new_time)+".png", sct_img.reshape(224,224,3))
-                    plt.imsave(DISAGREE_DIR+str(x)+"/"+"img"+str(new_time)+"s"+str(classification2)+".png", img.reshape(224,224,3))
+                    sct_img_print = cv2.cvtColor(sct_img.reshape(RESOLUTION,RESOLUTION,3), cv2.COLOR_RGB2BGR)
+                    img_print = cv2.cvtColor(img.reshape(RESOLUTION,RESOLUTION,3), cv2.COLOR_RGB2BGR)
+                    cv2.imwrite(DISAGREE_DIR+str(x)+"/"+"img"+str(new_time)+".png", sct_img_print)
+                    cv2.imwrite(DISAGREE_DIR+str(x)+"/"+"img"+str(new_time)+".png", img_print)
+                    
 
                 #if classification[0] == 1:
                     #keyboard.send("2")
@@ -69,16 +78,17 @@ with mss() as sct:
                         print("Hook Detected!")
 
                         print("Time Passed: ",new_time-old_time)
-                        if (new_time-old_time > 22.0):
+                        #if (new_time-old_time > 0.0):
+                        if True:
                             print("Reeling")
-                            keyboard.send("e")
-                            time.sleep(0.2)
-                            keyboard.send("e")
-                            time.sleep(0.2)
-                            keyboard.send("q")
+                            #keyboard.send("e")
+                            #time.sleep(0.2)
+                            #keyboard.send("e")
                             time.sleep(0.2)
                             keyboard.send("q")
-                            time.sleep(9)
+                            time.sleep(0.2)
+                            keyboard.send("q")
+                            time.sleep(6)
                         else:
                             print("Passing")
                             keyboard.send("r")
@@ -86,9 +96,19 @@ with mss() as sct:
                             keyboard.send("r")
                             time.sleep(4)
 
-                        plt.imsave(HOOKED_DIR+"img"+str(new_time)+".png", sct_img.reshape(224,224,3))
-                        plt.imsave(HOOKED_DIR+"img"+str(new_time)+"s.png", img.reshape(224,224,3))
+                    sct_img_print = cv2.cvtColor(sct_img.reshape(RESOLUTION,RESOLUTION,3), cv2.COLOR_RGB2BGR)
+                    img_print = cv2.cvtColor(img.reshape(RESOLUTION,RESOLUTION,3), cv2.COLOR_RGB2BGR)
+                    cv2.imwrite(HOOKED_DIR+str(x)+"/"+"img"+str(new_time)+".png", sct_img_print)
+                    cv2.imwrite(HOOKED_DIR+str(x)+"/"+"img"+str(new_time)+".png", img_print)
 
+                    keyboard.send("4")
+                    time.sleep(0.2)
+                    keyboard.send("4")
+                    time.sleep(0.3)
+                    keyboard.send("z")
+                    time.sleep(0.2)
+                    keyboard.send("z")
+                    time.sleep(0.3)
                     keyboard.send("f")
                     time.sleep(0.2)
                     keyboard.send("f")
